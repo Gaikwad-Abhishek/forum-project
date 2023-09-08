@@ -12,7 +12,7 @@ The forum project developed using the Spring Boot framework allows users to regi
 
 To access their own posts, users can visit the following URL:
 
-[http://localhost:8080/forum/mypost](http://localhost:8080/forum/mypost)
+[http://localhost:8080/forum/mypost](forum-project/main/implementationflow.png)
 
 ## Editing a Post
 
