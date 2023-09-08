@@ -54,7 +54,7 @@ Note that the owner of the post has the right to delete any comment on their pos
 
 The functionality for editing and deleting posts is implemented using a CRUD repository. Additionally, custom queries are added to the repository to enable post updates.
 
-![Implementation Flow](implementationflow.png)
+![Implementation Flow](forum-project/implementationflow.png)
 
 ### Custom Queries
 
