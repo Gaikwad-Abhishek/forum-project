@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>New Post Form</title>
+</head>
+
+<body th:object="${comment}">
+<!--	<h1>Post by <span th:text="*{author.name}">John Doe</span></h1>-->
+	
+<!--	<p>Likes: <span th:text="${likeCount}">0</span></p>-->
+	
+	<form method="post" action="#" th:action="@{/forum/post/{id}/edit/comment/save(id = ${commentId})}">
+		
+		<label for="content">Content</label>
+		<textarea id="content" name="content" th:field="*{content}"></textarea>
+		<input type="hidden" th:name="postId" th:value="${postId}">
+		<input type="submit" value="Like!">
+	</form>
+<!--<h1>Hello</h1>-->
+
+</body>
+</html>

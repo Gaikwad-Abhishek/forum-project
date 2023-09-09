@@ -13,7 +13,7 @@ public class LikeRecord {
   
   @Column(unique=true)
   @GeneratedValue(strategy=GenerationType.IDENTITY)
-  private int id;
+  private long id;
   
   @EmbeddedId
   private LikeId likeId;
