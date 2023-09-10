@@ -39,7 +39,7 @@ import com.prodapt.learningspring.repository.LikeCountRepository;
 import com.prodapt.learningspring.repository.PostRepository;
 import com.prodapt.learningspring.repository.UserRepository;
 import com.prodapt.learningspring.service.DomainUserService;
-import com.prodapt.learningspring.service.PostService;
+import com.prodapt.learningspring.service.EditDeleteService;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.ServletException;
@@ -67,7 +67,7 @@ public class ForumController {
 	private DomainUserService domainUserService;
 
 	@Autowired
-	private PostService postService;
+	private EditDeleteService editDeleteService;
 
 	@Autowired
 	private CommentCRUDRepository commentCRUDRepository;
@@ -122,68 +122,6 @@ public class ForumController {
 		return String.format("redirect:/forum/post/%d", post.getId());
 	}
 
-	@GetMapping("/mypost")
-	public String MyPostList(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-//	  List<Post> postList =  (List<Post>) postRepository.findAll();
-		List<Post> postList;
-		Optional<User> user = userRepository.findByName(userDetails.getUsername());
-		postList = postService.getMyPosts(user.get().getUserId());
-//		model.addAttribute("likerName", userDetails.getUsername());
-//		model.addAttribute("commenterName", userDetails.getUsername());
-		model.addAttribute("posts", postList);
-		return "forum/MyPosts";
-	}
-
-	@PostMapping("/post/{id}/delete")
-	public String deletePost(@PathVariable long id) {
-
-		postService.deleteLikeAndComment(id);
-		postService.deletePostById(id);
-
-		return String.format("redirect:/forum/mypost");
-	}
-
-	@GetMapping("/post/{id}/edit")
-	public String editPost(@PathVariable long id, Model model, @AuthenticationPrincipal UserDetails userDetails) {
-
-		AddPostForm postForm = new AddPostForm();
-		User author = domainUserService.getByName(userDetails.getUsername()).get();
-//	  System.out.println("UserId  "+ author.getId());
-		postForm.setUserId(author.getId());
-		Optional<Post> post;
-		post = postRepository.findById(id);
-		postForm.setUserId(post.get().getId());
-		postForm.setContent(post.get().getContent());
-		model.addAttribute("postForm", postForm);
-		model.addAttribute("postId", id);
-
-		return "forum/editForm";
-	}
-
-	@PostMapping("/post/{id}/edit/save")
-//@NeedsAuth(loginPage = "/loginpage")
-	public String editPostSave(@RequestParam("postId") long id,@ModelAttribute("postForm") AddPostForm postForm, BindingResult bindingResult,
-			RedirectAttributes attr) throws ServletException {
-//		if (bindingResult.hasErrors()) {
-//			System.out.println(bindingResult.getFieldErrors());
-//			attr.addFlashAttribute("org.springframework.validation.BindingResult.post", bindingResult);
-//			attr.addFlashAttribute("post", postForm);
-//			return "redirect:/forum/post/{id}/edit";
-//		}
-//  User log_user = this.loggedInUser.getLoggedInUser();
-//		Optional<User> user = userRepository.findById(postForm.getUserId());
-//  Optional<User> user = userRepository.findById(log_user.getUserId());
-//		if (user.isEmpty()) {
-//			throw new ServletException("Something went seriously wrong and we couldn't find the user in the DB");
-//		} 
-//		Optional<Post> post = postRepository.findById(id);
-//		Post updatedPost = post.get();
-//		updatedPost.setContent(postForm.getContent());
-//		postRepository.save(post);
-		postRepository.updatePost(id, postForm.getContent());
-		return String.format("redirect:/forum/mypost");
-	}
-
 	@GetMapping("/post/{id}")
 //  @NeedsAuth(loginPage = "/loginpage")
 	public String postDetail(@PathVariable long id, Model model, @AuthenticationPrincipal UserDetails userDetails)
@@ -203,6 +141,7 @@ public class ForumController {
 		model.addAttribute("likeCount", numLikes);
 		return "forum/postDetail";
 	}
+	
 
 	@PostMapping("/post/{id}/like")
 //  @NeedsAuth(loginPage = "/loginpage")
@@ -264,29 +203,4 @@ public class ForumController {
 		return String.format("redirect:/forum/post/%d", id);
 	}
 	
-	
-	
-	@PostMapping("/post/{id}/comment/delete")
-	public String deleteComment(@PathVariable long id) {
-		
-		commentCRUDRepository.deleteById(id);
-
-		return String.format("redirect:/forum/mypost");
-	}
-	
-	@GetMapping("/post/{id}/comment/edit")
-	public String editComment(@PathVariable long id,Model model) {
-		
-		model.addAttribute("comment", commentCRUDRepository.findById(id));
-		model.addAttribute("commentId", id);
-		return "forum/editComment";
-	}
-
-	@PostMapping("/post/{id}/edit/comment/save")
-	public String updateComment(@PathVariable long id,@RequestParam("content") String content) {
-		
-		commentCRUDRepository.updateContentById(id,content);
-
-		return String.format("redirect:/forum/mypost");
-	}
 }
