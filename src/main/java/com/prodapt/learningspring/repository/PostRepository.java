@@ -16,7 +16,7 @@ public interface PostRepository extends CrudRepository<Post, Long>{
 		
 		@Transactional
 	    @Modifying
-	    @Query("UPDATE Post p SET p.content = ?2 WHERE p.id = ?1")
-	    void updatePost(long postId,String content);
+	    @Query("UPDATE Post p SET p.content = ?3,p.title = ?2,p.updatedAt = CURRENT_TIMESTAMP  WHERE p.id = ?1")
+	    void updatePost(long postId,String title,String content);
 }	
 

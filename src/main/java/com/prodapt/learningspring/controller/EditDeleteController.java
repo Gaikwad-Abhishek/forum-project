@@ -60,6 +60,7 @@ public class EditDeleteController {
 		model.addAttribute("posts", postList);
 		
 		return "forum/MyPosts";
+//		return "forum/navbar";
 	}
 	
 	@PostMapping("/post/{id}/delete")
@@ -91,7 +92,7 @@ public class EditDeleteController {
 			return "redirect:/forum/post/{id}/edit";
 		}
 		
-		editDeleteService.editPost(id, postForm.getContent());
+		editDeleteService.editPost(id, postForm.getTitle(), postForm.getContent());
 		return String.format("redirect:/forum/mypost");
 	}
 	

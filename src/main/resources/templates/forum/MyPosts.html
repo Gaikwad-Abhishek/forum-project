@@ -3,19 +3,26 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Blog post</title>
-	<!--<link rel="stylesheet" th:href="@{/css/styles.css}">-->
+	<title>Forum</title>
+	<div th:replace="forum/head :: head"></div>
 </head>
 
 <body>
+
 	<main>
-		<!--        <header th:insert="forum/fragments.html :: navbar"></header>-->
+		<div th:replace="forum/navbar :: navbar"></div>
+		<!--		<div th:replace="forum/navbar.html :: navbar"></div>-->
+		<!--		<header th:insert="forum/navbar.html :: navbar"></header>-->
 		<h1>My Posts</h1>
 		<div class="posts" th:each="post :${posts}">
 			<!--            <h2><span th:text="${post.content}"></span></h1>-->
 			<h3 class="italic">Post by <span class="userId" th:text="${post.author.name}">John Doe</span></h1>
-				<h3 class="italic">Updated at: <span
+				<p th:text="${post.updatedAt}"></p>
+				<h3 class="italic" th:if="${post.updatedAt} == NULL">Created at: <span
 						th:text="${#calendars.format(post.createdAt, 'dd/MMM/yyyy HH:mm z')}"></span></h3>
+				<h3 class="italic" th:if="${post.updatedAt} != NULL">Updated at: <span
+						th:text="${#calendars.format(post.updatedAt, 'dd/MMM/yyyy HH:mm z')}"></span></h3>
+				<p th:text="${post.title}">Title</p>
 				<p th:text="${post.content}">This is a post.</p>
 				<!--            <form method="post" action="#" th:action="@{/forum/post/{id}/like(id = ${post.id})}">-->
 				<!--				<input type="hidden" th:name="likerName" th:value="${likerName}">-->
@@ -27,9 +34,8 @@
 				<form method="post" action="#" th:action="@{/forum/post/{id}/delete(id = ${post.id})}" id="myForm">
 					<input type="submit" value="Delete">
 				</form>
-				<form action="#" th:action="@{/forum/post/{id}/comment(id = ${post.id})}" method="post">
-					<input name="content" type="text">
-					<input type="submit" value="Add Comment">
+				<form action="#" th:action="@{/forum/post/{id}(id = ${post.id})}" method="get">
+					<input type="submit" value="View Comments">
 				</form>
 		</div>
 	</main>
@@ -41,7 +47,8 @@
 			if (!confirmation) {
 				event.preventDefault(); // Prevent the form submission if the user cancels
 			}
-		});	
+		});
+
 	</script>
 
 </body>

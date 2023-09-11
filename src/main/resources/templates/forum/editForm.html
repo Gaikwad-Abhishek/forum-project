@@ -27,6 +27,8 @@
 		<!--		<select id="userdropdown" th:name="likerId">-->
 		<!--			<option th:each="userOption : ${userList}" th:value="${userOption.id}" th:text="${userOption.name}"></option>-->
 		<!--		</select>-->
+		<label for="content">Title</label>-->
+		<textarea id="content" name="title" th:field="*{title}"></textarea>
 		<label for="content">Content</label>-->
 		<textarea id="content" name="content" th:field="*{content}"></textarea>
 		<input type="hidden" th:name="postId" th:value="${postId}">

@@ -38,6 +38,7 @@ public class EditDeleteService {
 		Optional<Post> post;
 		post = postRepository.findById(id);
 		postForm.setUserId(post.get().getId());
+		postForm.setTitle(post.get().getTitle());		
 		postForm.setContent(post.get().getContent());
 		return postForm;
 	}
@@ -62,9 +63,9 @@ public class EditDeleteService {
 		likeCRUDRepository.deleteByPostId(id);
 	}
 	
-	public void editPost(long id,String content) {
+	public void editPost(long id,String title,String content) {
 		
-		postRepository.updatePost(id,content);
+		postRepository.updatePost(id,title,content);
 	
 	}
 	

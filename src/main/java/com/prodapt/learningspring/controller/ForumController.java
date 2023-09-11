@@ -116,6 +116,7 @@ public class ForumController {
 		}
 		Post post = new Post();
 		post.setAuthor(user.get());
+		post.setTitle(postForm.getTitle());
 		post.setContent(postForm.getContent());
 		postRepository.save(post);
 
