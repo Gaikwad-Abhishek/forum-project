@@ -11,18 +11,22 @@
 	<h1>AuthorId <span th:text="*{author.id}">John Doe</span></h1>
 	<p th:text="*{content}">This is a post.</p>
 	<p>Likes: <span th:text="${likeCount}">0</span></p>
-	<form method="post" action="#" th:action="@{/forum/post/{id}/like(id = ${post.id})}">
+	<!--	<form method="post" action="#" th:action="@{/forum/post/{id}/like(id = ${post.id})}">-->
 
-		<!--		<select id="userdropdown" th:name="likerId">-->
-		<!--			<option th:each="userOption : ${userList}" th:value="${userOption.id}" th:text="${userOption.name}"></option>-->
-		<!--		</select>-->
+	<!--				<select id="userdropdown" th:name="likerId">-->
+	<!--					<option th:each="userOption : ${userList}" th:value="${userOption.id}" th:text="${userOption.name}"></option>-->
+	<!--				</select>-->
+	<!--		<input type="hidden" th:name="likerName" th:value="${likerName}">-->
+	<!--		<input type="submit" value="Like!">-->
+	<!--	</form>-->
+	<form method="post" action="#" th:action="@{/forum/post/{id}/toggleLike(id=${post.id})}">
 		<input type="hidden" th:name="likerName" th:value="${likerName}">
-		<input type="submit" value="Like!">
+		<input type="hidden" th:name="likeStatus" th:value="${likeStatus}">
+		<button type="submit" th:text="${likeStatus ? 'Unlike' : 'Like'}">Like/Unlike</button>
 	</form>
 
 	<form method="post" action="#" th:action="@{/forum/post/{id}/comment(id = ${post.id})}">
-		<input type="text" id="content" th:name="content">
-		<label for="userdropdown">Select your username</label>
+		<input type="text" id="content" th:name="content" required>
 		<!--		<select id="userdropdown" th:name="commenterId">-->
 		<!--			<option th:each="userOption : ${userList}" th:value="${userOption.id}" th:text="${userOption.name}">-->
 		<!--			</option>-->
@@ -57,12 +61,29 @@
 				<!--				<input type="submit" value="Delete">-->
 				<!--				<button th:if="(${loggedInUserId} == ${comment.user.id})" type="submit">Delete</button>-->
 				<!--				<button th:if="(${loggedInUserId} == *{author.id})" type="submit">Delete</button>-->
-				<button th:if="${loggedInUserId == comment.user.id or loggedInUserId == post.author.id}" type="submit">Delete</button>
+				<button th:if="${loggedInUserId == comment.user.id or loggedInUserId == post.author.id}"
+					type="submit">Delete</button>
 
 
 			</form>
 		</ul>
 	</ul>
+
+	<script th:inline="javascript">
+		/* <![CDATA[ */
+		var likeStatus;
+
+		// Function to toggle the like/dislike status
+		function toggleLikeUnlike() {
+			likeStatus = !likeStatus;
+			var button = document.querySelector('button[type="submit"]');
+			button.textContent = likeStatus ? 'Unlike' : 'Like';
+		}
+
+		// Attach a click event listener to the button
+		document.querySelector('button[type="submit"]').addEventListener('click', toggleLikeUnlike);
+        /* ]]> */
+	</script>
 </body>
 
 </html>

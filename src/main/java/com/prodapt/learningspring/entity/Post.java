@@ -36,4 +36,11 @@ public class Post {
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "author_id", referencedColumnName = "id")
   private User author;
+  
+  public boolean isPresent() {
+
+  		return createdAt != null;
+
+  }
+  
 }

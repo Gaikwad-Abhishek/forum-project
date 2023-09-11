@@ -58,9 +58,8 @@ public class EditDeleteService {
 	}
 	
 	@Transactional
-	public void deleteLikeAndComment(long id) {
+	public void deleteLikes(long id) {
 		likeCRUDRepository.deleteByPostId(id);
-		commentCRUDRepository.deleteByPostId(id);
 	}
 	
 	public void editPost(long id,String content) {

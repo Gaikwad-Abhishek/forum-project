@@ -52,20 +52,20 @@ public class EditDeleteController {
 
 	@GetMapping("/mypost")
 	public String MyPostList(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-//	  List<Post> postList =  (List<Post>) postRepository.findAll();
-		List<Post> postList;
+		
 		Optional<User> user = userRepository.findByName(userDetails.getUsername());
-		postList = editDeleteService.getMyPosts(user.get().getUserId());
+		List<Post> postList = editDeleteService.getMyPosts(user.get().getUserId());
 //		model.addAttribute("likerName", userDetails.getUsername());
 //		model.addAttribute("commenterName", userDetails.getUsername());
 		model.addAttribute("posts", postList);
+		
 		return "forum/MyPosts";
 	}
 	
 	@PostMapping("/post/{id}/delete")
 	public String deletePost(@PathVariable long id) {
 
-		editDeleteService.deleteLikeAndComment(id);
+		editDeleteService.deleteLikes(id);
 		editDeleteService.deletePostById(id);
 
 		return String.format("redirect:/forum/mypost");
@@ -84,12 +84,12 @@ public class EditDeleteController {
 	@PostMapping("/post/{id}/edit/save")
 	public String editPostSave(@RequestParam("postId") long id,@ModelAttribute("postForm") AddPostForm postForm, BindingResult bindingResult,
 			RedirectAttributes attr) throws ServletException {
-//		if (bindingResult.hasErrors()) {
-//			System.out.println(bindingResult.getFieldErrors());
-//			attr.addFlashAttribute("org.springframework.validation.BindingResult.post", bindingResult);
-//			attr.addFlashAttribute("post", postForm);
-//			return "redirect:/forum/post/{id}/edit";
-//		}
+		if (bindingResult.hasErrors()) {
+			System.out.println(bindingResult.getFieldErrors());
+			attr.addFlashAttribute("org.springframework.validation.BindingResult.post", bindingResult);
+			attr.addFlashAttribute("post", postForm);
+			return "redirect:/forum/post/{id}/edit";
+		}
 		
 		editDeleteService.editPost(id, postForm.getContent());
 		return String.format("redirect:/forum/mypost");

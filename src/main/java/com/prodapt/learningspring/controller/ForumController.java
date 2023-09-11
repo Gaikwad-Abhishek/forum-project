@@ -138,10 +138,11 @@ public class ForumController {
 		model.addAttribute("commenterName", userDetails.getUsername());
 		model.addAttribute("comments", commentCRUDRepository.findByPostId(post.get().getId()));
 		int numLikes = likeCRUDRepository.countByLikeIdPost(post.get());
+		model.addAttribute("likeStatus", likeCRUDRepository
+				.existsByLikeIdUserAndLikeIdPost(userRepository.findByName(userDetails.getUsername()), post));
 		model.addAttribute("likeCount", numLikes);
 		return "forum/postDetail";
 	}
-	
 
 	@PostMapping("/post/{id}/like")
 //  @NeedsAuth(loginPage = "/loginpage")
@@ -202,5 +203,37 @@ public class ForumController {
 		commentCRUDRepository.save(comment);
 		return String.format("redirect:/forum/post/%d", id);
 	}
-	
+
+	@PostMapping("/post/{id}/toggleLike")
+	public String toggleLike(@PathVariable long id, @RequestParam("likerName") String likerName,
+			@RequestParam("likeStatus") boolean likeStatus, RedirectAttributes attr) throws ResourceNotFoundException {
+		User liker = userRepository.findByName(likerName).orElse(null);
+		Post post = postRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Post not found with ID: " + id));
+
+		if (liker != null && post.isPresent()) {
+			if (likeStatus) {
+				// User wants to dislike, so remove the like
+				LikeRecord like = likeCRUDRepository.findByLikeIdUserAndLikeIdPost(liker, post);
+
+				if (like != null) {
+					likeCRUDRepository.delete(like);
+				}
+			} else {
+				LikeId likeId = new LikeId();
+				likeId.setUser(userRepository.findByName(likerName).get());
+				likeId.setPost(postRepository.findById(id).get());
+				LikeRecord like = new LikeRecord();
+				like.setLikeId(likeId);
+				try {
+					likeCRUDRepository.save(like);
+				} catch (Exception e) {
+					return String.format("redirect:/forum/post/%d", id);
+				}
+			}
+		}
+
+		return String.format("redirect:/forum/post/%d", id);
+	}
+
 }
