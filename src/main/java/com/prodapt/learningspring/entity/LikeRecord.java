@@ -10,12 +10,30 @@ import lombok.Data;
 @Entity
 @Data
 public class LikeRecord {
-  
-  @Column(unique=true)
+
+@Column(unique=true)
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   private int id;
   
   @EmbeddedId
   private LikeId likeId;
+  
+  public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public LikeId getLikeId() {
+		return likeId;
+	}
+
+	public void setLikeId(LikeId likeId) {
+		this.likeId = likeId;
+	}
+  
+  
   
 }

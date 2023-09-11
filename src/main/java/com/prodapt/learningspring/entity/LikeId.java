@@ -6,7 +6,6 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.Data;
 
 @Embeddable
@@ -22,5 +21,20 @@ public class LikeId implements Serializable{
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "post_id", referencedColumnName = "id")
   private Post post;
+  
+  public User getUser() {
+		return user;
+	}
 
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Post getPost() {
+		return post;
+	}
+
+	public void setPost(Post post) {
+		this.post = post;
+	}
 }

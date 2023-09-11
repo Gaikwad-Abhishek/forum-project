@@ -1,6 +1,6 @@
 package com.prodapt.learningspring.controller;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -42,6 +42,7 @@ import com.prodapt.learningspring.service.DomainUserService;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.ServletException;
+import jakarta.transaction.Transactional;
 
 @Controller
 @RequestMapping("/forum")
@@ -128,35 +129,15 @@ public class ForumController {
     model.addAttribute("userList", userList);
     //int numLikes = likeCountRepository.countByPostId(id);
     model.addAttribute("likerName", userDetails.getUsername());
+    //model.addAttribute("dislikerName", userDetails.getUsername());
     model.addAttribute("commenterName", userDetails.getUsername());
     model.addAttribute("comments",commentCRUDRepository.findByPostId(post.get().getId()));
     int numLikes = likeCRUDRepository.countByLikeIdPost(post.get());
     model.addAttribute("likeCount", numLikes);
+    model.addAttribute("likeStatus", likeCRUDRepository.existsByLikeIdUserAndLikeIdPost(userRepository.findByName(userDetails.getUsername()),  post));
     return "forum/postDetail";
   }
   
-  @PostMapping("/post/{id}/like")
-//  @NeedsAuth(loginPage = "/loginpage")
-  public String postLike(@PathVariable int id,String likerName, RedirectAttributes attr) {
-//	if (this.loggedInUser.getLoggedInUser() == null) {
-//          return "redirect:/loginpage";
-//    }
-	LikeId likeId = new LikeId();
-//    Optional<User> user = userRepository.findUserById(this.loggedInUser.getLoggedInUser().getUserId());
-	likeId.setUser(userRepository.findByName(likerName).get());
-//	User user = this.loggedInUser.getLoggedInUser();
-//    likeId.setUser(userRepository.findById(user.get().getUserId()));
-//    likeId.setUser(user);
-    likeId.setPost(postRepository.findById(id).get());
-    LikeRecord like = new LikeRecord();
-    like.setLikeId(likeId);
-    try {
-    likeCRUDRepository.save(like);
-    }catch(Exception e) {
-    	return String.format("redirect:/forum/post/%d", id);
-    }
-    return String.format("redirect:/forum/post/%d", id);
-  }
   
   @GetMapping("/register")
   public String getRegistrationForm(Model model) {
@@ -194,4 +175,37 @@ public class ForumController {
 	commentCRUDRepository.save(comment);
     return  String.format("redirect:/forum/post/%d", id);
   }
+  
+  @PostMapping("/post/{id}/toggleLike")
+  public String toggleLike(@PathVariable int id, @RequestParam("likerName") String likerName, @RequestParam("likeStatus") boolean likeStatus, RedirectAttributes attr) throws ResourceNotFoundException {
+      User liker = userRepository.findByName(likerName).orElse(null);
+      Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post not found with ID: " + id));
+	  
+      if (liker != null && post.isPresent()) {
+          if (likeStatus) {
+              // User wants to dislike, so remove the like
+        	  LikeRecord like = likeCRUDRepository.findByLikeIdUserAndLikeIdPost(liker,post);
+              
+              if (like != null) {
+                  likeCRUDRepository.delete(like);
+              }
+          } else {
+        	  LikeId likeId = new LikeId();
+        	  likeId.setUser(userRepository.findByName(likerName).get());
+        	  likeId.setPost(postRepository.findById(id).get());
+        	    LikeRecord like = new LikeRecord();
+        	    like.setLikeId(likeId);
+        	    try {
+        	    likeCRUDRepository.save(like);
+        	    }catch(Exception e) {
+        	    	return String.format("redirect:/forum/post/%d", id);
+        	    }
+          }
+      }
+      
+      return String.format("redirect:/forum/post/%d", id);
+  }
+
+  
+  
 }

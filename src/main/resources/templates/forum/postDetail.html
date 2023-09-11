@@ -2,41 +2,87 @@
 <html>
 
 <head>
-	<meta charset="UTF-8">
-	<title>Blog post</title>
+    <meta charset="UTF-8">
+    <title>Blog post</title>
+    
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #666;
+        }
+
+        button[type="submit"] {
+            background-color: #3498db;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+
+        /* Add more styles as needed */
+    </style>
 </head>
 
 <body th:object="${post}">
-	<h1>Post by <span th:text="*{author.name}">John Doe</span></h1>
-	<p th:text="*{content}">This is a post.</p>
-	<p>Likes: <span th:text="${likeCount}">0</span></p>
-	<form method="post" action="#" th:action="@{/forum/post/{id}/like(id = ${post.id})}">
-		<label for="userdropdown">Select your username</label>
-		<!--		<select id="userdropdown" th:name="likerId">-->
-		<!--			<option th:each="userOption : ${userList}" th:value="${userOption.id}" th:text="${userOption.name}"></option>-->
-		<!--		</select>-->
-		<input type="hidden" th:name="likerName" th:value="${likerName}">
-		<input type="submit" value="Like!">
-	</form>
+    <h1>Post by <span th:text="*{author.name}">John Doe</span></h1>
+    <p th:text="*{content}">This is a post.</p>
+    <p>Likes: <span th:text="${likeCount}">0</span></p>
 
-	<form method="post" action="#" th:action="@{/forum/post/{id}/comment(id = ${post.id})}">
-		<input type="text" id="content" th:name="content">
-		<label for="userdropdown">Select your username</label>
-<!--		<select id="userdropdown" th:name="commenterId">-->
-<!--			<option th:each="userOption : ${userList}" th:value="${userOption.id}" th:text="${userOption.name}">-->
-<!--			</option>-->
-<!--		</select>-->
-		<input type="hidden" th:name="commenterName" th:value="${commenterName}">
-		<input type="submit" value="Comment!">
-	</form>
-	<h2>Comments</h2>
-	<ul th:each="comment : ${comments}">
-       <li th:text="${comment.user.name}">Name</li>
-    <ul><br>
-       <li th:text="${comment.content}">Comment</li><br>
-       <div th:text="${comment.createdAt}">Comment</div>
-       </ul>
+    <form method="post" action="#" th:action="@{/forum/post/{id}/toggleLike(id=${post.id})}">
+        <input type="hidden" th:name="likerName" th:value="${likerName}">
+        <input type="hidden" th:name="likeStatus" th:value="${likeStatus}">
+        <button type="submit" th:text="${likeStatus ? 'Unlike' : 'Like'}">Like/Unlike</button>
+    </form>
+
+    <form method="post" action="#" th:action="@{/forum/post/{id}/comment(id = ${post.id})}">
+        <input type="text" id="content" th:name="content" required>
+        <input type="hidden" th:name="commenterName" th:value="${commenterName}">
+        <input type="submit" value="Comment!">
+    </form>
+    <h2>Comments</h2>
+    <ul th:each="comment : ${comments}">
+        <li th:text="${comment.user.name}">Name</li>
+        <ul><br>
+            <li th:text="${comment.content}">Comment</li><br>
+            <div th:text="${comment.createdAt}">Comment</div>
+        </ul>
     </ul>
+
+    <script th:inline="javascript">
+        /* <![CDATA[ */
+        var likeStatus;
+        
+        // Function to toggle the like/dislike status
+        function toggleLikeUnlike() {
+            likeStatus = !likeStatus;
+            var button = document.querySelector('button[type="submit"]');
+            button.textContent = likeStatus ? 'Unlike' : 'Like';
+        }
+        
+        // Attach a click event listener to the button
+        document.querySelector('button[type="submit"]').addEventListener('click', toggleLikeUnlike);
+        /* ]]> */
+    </script>
 </body>
 
 </html>
+
+
+
+
+
+
+
+

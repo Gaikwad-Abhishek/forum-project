@@ -1,0 +1,16 @@
+@PostMapping("/post/{id}/dislike")
+public String postDislike(@PathVariable int id, String dislikerName, RedirectAttributes attr) {
+    // Retrieve the disliker and post
+    User disliker = userRepository.findByName(dislikerName).orElseThrow(() -> new ResourceNotFoundException("User not found: " + dislikerName));
+    Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post not found with ID: " + id));
+
+    // Retrieve the like record for the disliker and the post
+    LikeRecord like = likeCRUDRepository.findByLikeIdUserAndLikeIdPost(disliker, post);
+
+    if (like != null) {
+        // Remove the like
+        likeCRUDRepository.delete(like);
+    }
+
+    return "redirect:/forum/post/{id}"; // Redirect to the post detail page
+}
