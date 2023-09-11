@@ -3,6 +3,53 @@
 <head>
 <meta charset="UTF-8">
 <title>New Post Form</title>
+
+<style>
+	/* CSS styles for the New Post Form */
+	body {
+	    font-family: Arial, sans-serif;
+	    background-color: #f0f0f0;
+	    margin: 0;
+	    padding: 0;
+	}
+	
+	form {
+	    max-width: 600px;
+	    margin: 0 auto;
+	    padding: 50px;
+	    background-color: #fff;
+	    border: 1px solid #ddd;
+	    border-radius: 5px;
+	    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	}
+	
+	label {
+	    font-weight: bold;
+	}
+	
+	textarea {
+	    width: 90%;
+	    height: 150px;
+	    padding: 10px;
+	    margin-bottom: 20px;
+	    border: 2px solid #ccc;
+	    border-radius: 5px;
+	}
+	
+	input[type="submit"] {
+	    padding: 10px 20px;
+	    background-color: #007bff;
+	    color: #fff;
+	    border: none;
+	    cursor: pointer;
+	    border-radius: 4px;
+	}
+	
+	input[type="submit"]:hover {
+	    background-color: #0056b3;
+	}
+
+</style>
 </head>
 <!--<body>-->
 <!--	<h1>Create a new post!</h1>-->
@@ -27,7 +74,7 @@
 		<!--		<select id="userdropdown" th:name="likerId">-->
 		<!--			<option th:each="userOption : ${userList}" th:value="${userOption.id}" th:text="${userOption.name}"></option>-->
 		<!--		</select>-->
-		<label for="content">Content</label>-->
+		<label for="content">Edit the post:</label>
 		<textarea id="content" name="content" th:field="*{content}"></textarea>
 		<input type="hidden" th:name="postId" th:value="${postId}">
 		<input type="submit" value="Like!">
