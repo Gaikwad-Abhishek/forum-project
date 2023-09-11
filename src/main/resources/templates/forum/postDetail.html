@@ -4,70 +4,201 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Blog post</title>
+	<style>
+		/* Define your CSS styles here */
+		
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f0f0f0;
+			
+		}
+		
+		 .button-container {
+			
+	        display: flex; /* Use flexbox to arrange buttons horizontally */
+	        gap: 10px; /* Add some spacing between buttons */
+	    }
+	
+	    .button-container button {
+	        padding: 5px 10px; /* Adjust padding as needed */
+	        background-color: #007bff;
+	        color: #fff;
+	        border: none;
+	        cursor: pointer;
+	    }
+	     .comment-input {
+            width: 50%; /* Make the input box full width */
+            padding: 6px; /* Adjust padding as needed */
+            font-size: 20px; /* Increase font size as needed */
+        }
+	
+	    .button-container button:hover {
+	        background-color: #0056b3;
+	    }
+	     .like-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .content-box {
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #fff;
+            margin-bottom: 20px; /* Add margin to separate content from comments */
+        }
+        .comment-box {
+            border: 1px solid #ddd;
+            width: 90%;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #fff;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .post-container {
+			width: 1000px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            text-align: center;
+        }
+
+        .comment-header span {
+            font-weight: bold;
+        }
+
+        .comment-content {
+            color: #333;
+            text-align: center; /* Center the comment content */
+            flex-grow: 1; /* Expand content to fill remaining space */
+            font-size: 15px;
+        }
+        .post-container-1{
+			width: 90%;
+			border: 1px solid #ccc;
+			display: flex;
+			align-items: center;
+		    padding: 50px;
+		    margin: 10px;
+		    background-color: #f9f9f9;
+		    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+			
+		}
+		.post-like-container{
+			
+			display: flex;
+		    flex-direction: column; /* Stack the child elements vertically */
+		    align-items: center; /* Center child elements horizontally */
+		    border: 1px solid #ddd;
+		    background-color: #fff;
+		    margin: 20px;
+		
+		    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		    border-radius: 5px;
+			
+		}
+
+
+		h1 {
+			color: #333;
+		}
+
+		p {
+			color: #666;
+		}
+
+		button[type="submit"] {
+			background-color: #007bff;
+			color: #fff;
+			border: none;
+			padding: 10px 20px;
+			cursor: pointer;
+		}
+
+		button[type="submit"]:hover {
+			background-color: #0056b3;
+		}
+
+		/* Add more CSS styles as needed */
+	</style>
 </head>
 
 <body th:object="${post}">
-	<h1>Post by <span th:text="*{author.name}">John Doe</span></h1>
-	<h1>AuthorId <span th:text="*{author.id}">John Doe</span></h1>
-	<p th:text="*{content}">This is a post.</p>
-	<p>Likes: <span th:text="${likeCount}">0</span></p>
-	<!--	<form method="post" action="#" th:action="@{/forum/post/{id}/like(id = ${post.id})}">-->
+	
+	<div class="post-like-container">
+		<div class="post-container-1" >
+			<div class="post-container">
+		        <h1>Post by <span th:text="*{author.name}">John Doe</span></h1>
+		        <!--<h1>AuthorId <span th:text="*{author.id}">John Doe</span></h1>-->
+		        <p th:text="*{content}">This is a post.</p>
+		    </div>
+		</div>
+		
+		<div class="like-container">
+			
+			<p>Likes:</p>
+		        <span th:text="${likeCount}">0</span>
+		        <form method="post" action="#" th:action="@{/forum/post/{id}/toggleLike(id=${post.id})}">
+		            <input type="hidden" th:name="likerName" th:value="${likerName}">
+		            <input type="hidden" th:name="likeStatus" th:value="${likeStatus}">
+		            <button type="submit" th:text="${likeStatus ? 'Unlike' : 'Like'}">Like/Unlike</button>
+		        </form> 
+		        
+		        <form method="post" action="#" th:action="@{/forum/post/{id}/comment(id = ${post.id})}">
+			            <!-- Increase the size of the comment input -->
+			            <input type="text" id="content" th:name="content" class="comment-input" required>
+			            <input type="hidden" th:name="commenterName" th:value="${commenterName}" required>
+			            <input type="submit" value="Comment!" style="padding: 8px 20px; font-size: 16px; color: rgb(255, 255, 255);background-color: #007bff;">
+			    </form>
+		 </div>
+	</div>
+	
+	
+	
+	
+	
+	 
 
-	<!--				<select id="userdropdown" th:name="likerId">-->
-	<!--					<option th:each="userOption : ${userList}" th:value="${userOption.id}" th:text="${userOption.name}"></option>-->
-	<!--				</select>-->
-	<!--		<input type="hidden" th:name="likerName" th:value="${likerName}">-->
-	<!--		<input type="submit" value="Like!">-->
-	<!--	</form>-->
-	<form method="post" action="#" th:action="@{/forum/post/{id}/toggleLike(id=${post.id})}">
-		<input type="hidden" th:name="likerName" th:value="${likerName}">
-		<input type="hidden" th:name="likeStatus" th:value="${likeStatus}">
-		<button type="submit" th:text="${likeStatus ? 'Unlike' : 'Like'}">Like/Unlike</button>
-	</form>
-
-	<form method="post" action="#" th:action="@{/forum/post/{id}/comment(id = ${post.id})}">
-		<input type="text" id="content" th:name="content" required>
-		<!--		<select id="userdropdown" th:name="commenterId">-->
-		<!--			<option th:each="userOption : ${userList}" th:value="${userOption.id}" th:text="${userOption.name}">-->
-		<!--			</option>-->
-		<!--		</select>-->
-		<input type="hidden" th:name="commenterName" th:value="${commenterName}" required>
-		<input type="submit" value="Comment!">
-	</form>
+	
+	
+	
 	<h2>Comments</h2>
-	<ul th:each="comment : ${comments}">
-		<li th:text="${comment.user.name}">Name</li>
-		<ul><br>
-			<li th:text="${comment.content}">Comment</li><br>
-			<div th:text="${comment.createdAt}">Comment</div>
-			<form method="get" action="#" th:action="@{/forum/post/{id}/comment/edit(id = ${comment.id})}">
-
-				.<input type="hidden" th:name="likerName" th:value="${loggedInUserId}">
-				<input type="hidden" th:name="commenterName" th:value="${commenterName}">
-				<button th:if="${loggedInUserId} == ${comment.user.id}" type="submit">Edit</button>
-
-
-			</form>
-
-			<form method="post" action="#" th:action="@{/forum/post/{id}/comment/delete(id = ${comment.id})}">
-
-				<!--		<select id="userdropdown" th:name="commenterId">-->
-				<!--			<option th:each="userOption : ${userList}" th:value="${userOption.id}" th:text="${userOption.name}">-->
-				<!--			</option>-->
-				<!--		</select>-->
-				<input type="hidden" th:name="likerName" th:value="${loggedInUserId}">
-
-				<input type="hidden" th:name="commenterName" th:value="${commenterName}">
-				<!--				<input type="submit" value="Delete">-->
-				<!--				<button th:if="(${loggedInUserId} == ${comment.user.id})" type="submit">Delete</button>-->
-				<!--				<button th:if="(${loggedInUserId} == *{author.id})" type="submit">Delete</button>-->
-				<button th:if="${loggedInUserId == comment.user.id or loggedInUserId == post.author.id}"
-					type="submit">Delete</button>
-
-
-			</form>
-		</ul>
-	</ul>
+		<ul th:each="comment : ${comments}">
+		    <li>
+	            <div class="comment-box">
+	                <div class="comment-header">
+	                    <span th:text="${comment.user.name}">Commenter Name</span>
+	                    <span th:text="${comment.createdAt}">Timestamp</span>
+	                </div>
+	                <p class="comment-content" th:text="${comment.content}">Comment Content</p>
+	                <div class="button-container">
+	                    <form method="get" action="#"
+	                        th:action="@{/forum/post/{id}/comment/edit(id = ${comment.id})}">
+	                        <input type="hidden" th:name="likerName" th:value="${loggedInUserId}">
+	                        <input type="hidden" th:name="commenterName" th:value="${commenterName}">
+	                        <button th:if="${loggedInUserId} == ${comment.user.id}" type="submit">Edit</button>
+	                    </form>
+	
+	                    <form method="post" action="#"
+	                        th:action="@{/forum/post/{id}/comment/delete(id = ${comment.id})}">
+	                        <input type="hidden" th:name="likerName" th:value="${loggedInUserId}">
+	                        <input type="hidden" th:name="commenterName" th:value="${commenterName}">
+	                        <button th:if="${loggedInUserId == comment.user.id or loggedInUserId == post.author.id}"
+	                            type="submit">Delete</button>
+	                    </form>
+	                </div>
+	            </div>
+	        </li>
+	    </ul>
+	
+	
 
 	<script th:inline="javascript">
 		/* <![CDATA[ */
