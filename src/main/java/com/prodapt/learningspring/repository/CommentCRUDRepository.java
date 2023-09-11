@@ -10,6 +10,6 @@ import com.prodapt.learningspring.entity.Post;
 
 @Repository
 public interface CommentCRUDRepository extends CrudRepository<Comment, Long>{
-	List<Comment> findByPostId(int postId);
+	List<Comment> findByPostId(long postId);
 }
 

@@ -189,7 +189,8 @@ public class ForumController {
               if (like != null) {
                   likeCRUDRepository.delete(like);
               }
-          } else {
+          } 
+          else {
         	  LikeId likeId = new LikeId();
         	  likeId.setUser(userRepository.findByName(likerName).get());
         	  likeId.setPost(postRepository.findById(id).get());

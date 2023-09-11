@@ -18,14 +18,37 @@ import lombok.Data;
 @Entity
 @Data
 public class Post {
-
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
-  private int id;
+  private long id;
   
   private String content;
   
-  @Temporal(TemporalType.TIMESTAMP)
+  public long getId() {
+	return id;
+}
+
+public void setId(long id) {
+	this.id = id;
+}
+
+public String getContent() {
+	return content;
+}
+
+public void setContent(String content) {
+	this.content = content;
+}
+
+public User getAuthor() {
+	return author;
+}
+
+public void setAuthor(User author) {
+	this.author = author;
+}
+
+@Temporal(TemporalType.TIMESTAMP)
   @Column(name = "created_at")
   private Date createdAt;
   
@@ -38,41 +61,10 @@ public class Post {
   @JoinColumn(name = "author_id", referencedColumnName = "id")
   private User author;
   
-	
-  public int getId() {
-		return id;
-	}
+  public boolean isPresent() {
 
-	public void setId(int id) {
-		this.id = id;
-	}
+  		return createdAt != null;
 
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public User getAuthor() {
-		return author;
-	}
-
-	public void setAuthor(User author) {
-		this.author = author;
-	}
-	 
-	public boolean isPresent() {
-		return createdAt != null;
-	}
-
+  }
+  
 }
