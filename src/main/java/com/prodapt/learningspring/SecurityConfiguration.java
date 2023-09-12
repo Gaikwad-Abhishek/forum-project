@@ -30,7 +30,7 @@ public class SecurityConfiguration {
             .requestMatchers("/forum/register").permitAll()
             .anyRequest().authenticated())
             .logout(withDefaults())
-            .formLogin(withDefaults());
+            .formLogin((login) -> login.loginProcessingUrl("/login").defaultSuccessUrl("/forum/mypost", true));
         
         return http.build();
     }

@@ -60,13 +60,13 @@ public class EditDeleteController {
 		model.addAttribute("posts", postList);
 		
 		return "forum/MyPosts";
-//		return "forum/navbar";
+
 	}
 	
 	@PostMapping("/post/{id}/delete")
 	public String deletePost(@PathVariable long id) {
 
-		editDeleteService.deleteLikes(id);
+		editDeleteService.deleteLikesAndComments(id);
 		editDeleteService.deletePostById(id);
 
 		return String.format("redirect:/forum/mypost");
@@ -76,10 +76,14 @@ public class EditDeleteController {
 	public String editPost(@PathVariable long id, Model model, @AuthenticationPrincipal UserDetails userDetails) {
 		
 		User author = domainUserService.getByName(userDetails.getUsername()).get();
+		if(author.getUserId()==editDeleteService.getPost(id).getAuthor().getId()) {
 		model.addAttribute("postForm", editDeleteService.getSelectedPost(author,id));
 		model.addAttribute("postId", id);
-
+		
 		return "forum/editForm";
+		}
+
+		return String.format("redirect:/forum/mypost");
 	}
 
 	@PostMapping("/post/{id}/edit/save")
@@ -97,26 +101,31 @@ public class EditDeleteController {
 	}
 	
 	@PostMapping("/post/{id}/comment/delete")
-	public String deleteComment(@PathVariable long id) {
+	public String deleteComment(@PathVariable long id, @RequestParam("postId") long postId) {
 		
 		editDeleteService.deleteComment(id);
 	
-		return String.format("redirect:/forum/mypost");
+		return String.format("redirect:/forum/post/%d", postId);
 	}
 	
 	@GetMapping("/post/{id}/comment/edit")
-	public String editComment(@PathVariable long id,Model model) {
+	public String editComment(@PathVariable long id,Model model,@AuthenticationPrincipal UserDetails userDetails) {
 		
+		User author = domainUserService.getByName(userDetails.getUsername()).get();
+		if(author.getUserId()==editDeleteService.getSelectedComment(id).getUser().getId()) {
 		model.addAttribute("comment", editDeleteService.getSelectedComment(id));
 		model.addAttribute("commentId", id);
 		return "forum/editComment";
+		}
+		return String.format("redirect:/forum/mypost");
 	}
 
 	@PostMapping("/post/{id}/edit/comment/save")
-	public String updateComment(@PathVariable long id,@RequestParam("content") String content) {
+	public String updateComment(@PathVariable long id,@RequestParam("content") String content,@RequestParam("postId") long postId) {
 		
 		editDeleteService.updateComment(id, content);
 
-		return String.format("redirect:/forum/mypost");
+
+		return String.format("redirect:/forum/post/%d", postId);
 	}
 }

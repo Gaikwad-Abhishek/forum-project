@@ -119,8 +119,8 @@ public class ForumController {
 		post.setTitle(postForm.getTitle());
 		post.setContent(postForm.getContent());
 		postRepository.save(post);
-
-		return String.format("redirect:/forum/post/%d", post.getId());
+//		return String.format("redirect:/forum/post/%d", post.getId());
+		return "forum/postForm";
 	}
 
 	@GetMapping("/post/{id}")

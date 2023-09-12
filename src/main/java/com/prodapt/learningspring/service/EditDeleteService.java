@@ -43,6 +43,12 @@ public class EditDeleteService {
 		return postForm;
 	}
 	
+	public Post getPost(long id) {
+		Optional<Post> post;
+		post = postRepository.findById(id);
+		return post.get();
+	}
+	
 	@Transactional
 	public void deletePostById(long id) {
 //		postRepository.delete(postRepository.findById(id).get());
@@ -59,8 +65,9 @@ public class EditDeleteService {
 	}
 	
 	@Transactional
-	public void deleteLikes(long id) {
+	public void deleteLikesAndComments(long id) {
 		likeCRUDRepository.deleteByPostId(id);
+		commentCRUDRepository.deleteByPostId(id);
 	}
 	
 	public void editPost(long id,String title,String content) {
