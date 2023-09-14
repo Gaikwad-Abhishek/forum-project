@@ -64,11 +64,13 @@ public class EditDeleteController {
 	}
 	
 	@PostMapping("/post/{id}/delete")
-	public String deletePost(@PathVariable long id) {
-
+	public String deletePost(@PathVariable long id,@AuthenticationPrincipal UserDetails userDetails) {
+		
+		User author = domainUserService.getByName(userDetails.getUsername()).get();
+		if(author.getUserId()==editDeleteService.getPost(id).getAuthor().getId()) {
 		editDeleteService.deleteLikesAndComments(id);
 		editDeleteService.deletePostById(id);
-
+		}
 		return String.format("redirect:/forum/mypost");
 	}
 
@@ -86,7 +88,7 @@ public class EditDeleteController {
 		return String.format("redirect:/forum/mypost");
 	}
 
-	@PostMapping("/post/{id}/edit/save")
+	@PostMapping("/post/{id}/save")
 	public String editPostSave(@RequestParam("postId") long id,@ModelAttribute("postForm") AddPostForm postForm, BindingResult bindingResult,
 			RedirectAttributes attr) throws ServletException {
 		if (bindingResult.hasErrors()) {
@@ -100,15 +102,17 @@ public class EditDeleteController {
 		return String.format("redirect:/forum/mypost");
 	}
 	
-	@PostMapping("/post/{id}/comment/delete")
-	public String deleteComment(@PathVariable long id, @RequestParam("postId") long postId) {
+	@PostMapping("/post/comment/{id}/delete")
+	public String deleteComment(@PathVariable long id, @RequestParam("postId") long postId,@AuthenticationPrincipal UserDetails userDetails) {
 		
+		User author = domainUserService.getByName(userDetails.getUsername()).get();
+		if(author.getUserId()==editDeleteService.getSelectedComment(id).getUser().getId()) {
 		editDeleteService.deleteComment(id);
-	
+		}
 		return String.format("redirect:/forum/post/%d", postId);
 	}
 	
-	@GetMapping("/post/{id}/comment/edit")
+	@GetMapping("/post/comment/{id}/edit")
 	public String editComment(@PathVariable long id,Model model,@AuthenticationPrincipal UserDetails userDetails) {
 		
 		User author = domainUserService.getByName(userDetails.getUsername()).get();
@@ -120,11 +124,13 @@ public class EditDeleteController {
 		return String.format("redirect:/forum/mypost");
 	}
 
-	@PostMapping("/post/{id}/edit/comment/save")
-	public String updateComment(@PathVariable long id,@RequestParam("content") String content,@RequestParam("postId") long postId) {
+	@PostMapping("/post/comment/{id}/save")
+	public String updateComment(@PathVariable long id,@RequestParam("content") String content,@RequestParam("postId") long postId,@AuthenticationPrincipal UserDetails userDetails) {
 		
+		User author = domainUserService.getByName(userDetails.getUsername()).get();
+		if(author.getUserId()==editDeleteService.getSelectedComment(id).getUser().getId()) {
 		editDeleteService.updateComment(id, content);
-
+		}
 
 		return String.format("redirect:/forum/post/%d", postId);
 	}

@@ -17,7 +17,7 @@
 				<div class="card" style="margin-top: 9rem;">
 					<div class="card-header">Edit Comment</div>
 					<div class="card-body">
-						<form method="post" action="#" th:action="@{/forum/post/{id}/edit/comment/save(id = ${commentId})}" >
+						<form method="post" action="#" th:action="@{/forum/post/comment/{id}/save(id = ${commentId})}" >
 
 							<div class="form-group mb-3">
 								<label for="content">Content</label>

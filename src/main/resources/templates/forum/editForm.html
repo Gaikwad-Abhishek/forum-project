@@ -17,7 +17,7 @@
 				<div class="card" style="margin-top: 9rem;">
 					<div class="card-header">Update Post</div>
 					<div class="card-body">
-						<form method="post" action="#" th:action="@{/forum/post/{id}/edit/save}" th:object="${postForm}">
+						<form method="post" action="#" th:action="@{/forum/post/{id}/save}" th:object="${postForm}">
 							<div class="form-group mb-3">
 								<label for="username">Title</label>
 								<input type="text" class="form-control" id="content" name="title"
