@@ -67,7 +67,7 @@ public class EditDeleteController {
 	public String deletePost(@PathVariable long id,@AuthenticationPrincipal UserDetails userDetails) {
 		
 		User author = domainUserService.getByName(userDetails.getUsername()).get();
-		if(author.getUserId()==editDeleteService.getPost(id).getAuthor().getId()) {
+		if(author.getUserId() == editDeleteService.getPost(id).getAuthor().getId()) {
 		editDeleteService.deleteLikesAndComments(id);
 		editDeleteService.deletePostById(id);
 		}
@@ -78,11 +78,11 @@ public class EditDeleteController {
 	public String editPost(@PathVariable long id, Model model, @AuthenticationPrincipal UserDetails userDetails) {
 		
 		User author = domainUserService.getByName(userDetails.getUsername()).get();
-		if(author.getUserId()==editDeleteService.getPost(id).getAuthor().getId()) {
+		if(author.getUserId() == editDeleteService.getPost(id).getAuthor().getId()) {
 		model.addAttribute("postForm", editDeleteService.getSelectedPost(author,id));
 		model.addAttribute("postId", id);
 		
-		return "forum/editForm";
+		return "forum/editPost";
 		}
 
 		return String.format("redirect:/forum/mypost");
@@ -106,7 +106,7 @@ public class EditDeleteController {
 	public String deleteComment(@PathVariable long id, @RequestParam("postId") long postId,@AuthenticationPrincipal UserDetails userDetails) {
 		
 		User author = domainUserService.getByName(userDetails.getUsername()).get();
-		if(author.getUserId()==editDeleteService.getSelectedComment(id).getUser().getId()) {
+		if(author.getUserId() == editDeleteService.getSelectedComment(id).getUser().getId()) {
 		editDeleteService.deleteComment(id);
 		}
 		return String.format("redirect:/forum/post/%d", postId);
@@ -116,7 +116,7 @@ public class EditDeleteController {
 	public String editComment(@PathVariable long id,Model model,@AuthenticationPrincipal UserDetails userDetails) {
 		
 		User author = domainUserService.getByName(userDetails.getUsername()).get();
-		if(author.getUserId()==editDeleteService.getSelectedComment(id).getUser().getId()) {
+		if(author.getUserId() == editDeleteService.getSelectedComment(id).getUser().getId()) {
 		model.addAttribute("comment", editDeleteService.getSelectedComment(id));
 		model.addAttribute("commentId", id);
 		return "forum/editComment";
@@ -128,7 +128,7 @@ public class EditDeleteController {
 	public String updateComment(@PathVariable long id,@RequestParam("content") String content,@RequestParam("postId") long postId,@AuthenticationPrincipal UserDetails userDetails) {
 		
 		User author = domainUserService.getByName(userDetails.getUsername()).get();
-		if(author.getUserId()==editDeleteService.getSelectedComment(id).getUser().getId()) {
+		if(author.getUserId() == editDeleteService.getSelectedComment(id).getUser().getId()) {
 		editDeleteService.updateComment(id, content);
 		}
 
